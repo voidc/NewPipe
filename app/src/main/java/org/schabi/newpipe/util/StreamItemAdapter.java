@@ -173,7 +173,16 @@ public class StreamItemAdapter<T extends Stream> extends BaseAdapter {
         }
 
         public String getFormattedSize(int streamIndex) {
-            return Utility.formatBytes(getSizeInBytes(streamIndex));
+            long bytes = getSizeInBytes(streamIndex);
+            if (bytes < 1024) {
+                return String.format("%d B", bytes);
+            } else if (bytes < 1024 * 1024) {
+                return String.format("%.2f kB", (float) bytes / 1024);
+            } else if (bytes < 1024 * 1024 * 1024) {
+                return String.format("%.2f MB", (float) bytes / 1024 / 1024);
+            } else {
+                return String.format("%.2f GB", (float) bytes / 1024 / 1024 / 1024);
+            }
         }
 
         public String getFormattedSize(T stream) {

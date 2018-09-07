@@ -17,21 +17,23 @@ import org.schabi.newpipe.util.ThemeHelper;
 
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
-import us.shandian.giga.service.DownloadManagerService;
-import us.shandian.giga.ui.fragment.AllMissionsFragment;
-import us.shandian.giga.ui.fragment.MissionsFragment;
+//import us.shandian.giga.service.DownloadManagerService;
+//import us.shandian.giga.ui.fragment.AllMissionsFragment;
+//import us.shandian.giga.ui.fragment.MissionsFragment;
 
 public class DownloadActivity extends AppCompatActivity {
 
     private static final String MISSIONS_FRAGMENT_TAG = "fragment_tag";
-    private DeleteDownloadManager mDeleteDownloadManager;
+    //private DeleteDownloadManager mDeleteDownloadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*
         // Service
         Intent i = new Intent();
         i.setClass(this, DownloadManagerService.class);
         startService(i);
+        */
 
         ThemeHelper.setTheme(this);
         super.onCreate(savedInstanceState);
@@ -47,9 +49,10 @@ public class DownloadActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(true);
         }
 
-        mDeleteDownloadManager = new DeleteDownloadManager(this);
-        mDeleteDownloadManager.restoreState(savedInstanceState);
+        //mDeleteDownloadManager = new DeleteDownloadManager(this);
+        //mDeleteDownloadManager.restoreState(savedInstanceState);
 
+        /*
         MissionsFragment fragment = (MissionsFragment) getFragmentManager().findFragmentByTag(MISSIONS_FRAGMENT_TAG);
         if (fragment != null) {
             fragment.setDeleteManager(mDeleteDownloadManager);
@@ -62,15 +65,17 @@ public class DownloadActivity extends AppCompatActivity {
                 }
             });
         }
+        */
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        mDeleteDownloadManager.saveState(outState);
+        //mDeleteDownloadManager.saveState(outState);
         super.onSaveInstanceState(outState);
     }
 
     private void updateFragments() {
+        /*
         MissionsFragment fragment = new AllMissionsFragment();
         fragment.setDeleteManager(mDeleteDownloadManager);
 
@@ -78,6 +83,7 @@ public class DownloadActivity extends AppCompatActivity {
                 .replace(R.id.frame, fragment, MISSIONS_FRAGMENT_TAG)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
+        */
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,8 +120,10 @@ public class DownloadActivity extends AppCompatActivity {
     }
 
     private void deletePending() {
+        /*
         Completable.fromAction(mDeleteDownloadManager::deletePending)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
+        */
     }
 }

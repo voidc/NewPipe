@@ -40,7 +40,7 @@ import java.util.List;
 import icepick.Icepick;
 import icepick.State;
 import io.reactivex.disposables.CompositeDisposable;
-import us.shandian.giga.service.DownloadManagerService;
+//import us.shandian.giga.service.DownloadManagerService;
 
 public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
     private static final String TAG = "DialogFragment";
@@ -328,7 +328,13 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
         String url = stream.getUrl();
         fileName += "." + stream.getFormat().getSuffix();
 
-        DownloadManagerService.startMission(getContext(), url, location, fileName, isAudio, threadsSeekBar.getProgress() + 1);
+        int threads = threadsSeekBar.getProgress() + 1;
+        Log.d("DownloadDialog", "Download " + url + " (" +
+                "location: " + location + ", " +
+                "fileName: " + fileName + ", " +
+                "isAudio: " + isAudio + ", " +
+                "threads: " + threads + ")");
+        //DownloadManagerService.startMission(getContext(), url, location, fileName, isAudio, threadsSeekBar.getProgress() + 1);
         getDialog().dismiss();
     }
 }
