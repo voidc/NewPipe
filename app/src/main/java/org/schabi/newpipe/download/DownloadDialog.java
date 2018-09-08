@@ -1,6 +1,8 @@
 package org.schabi.newpipe.download;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -54,6 +56,8 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
 
     private StreamItemAdapter<AudioStream> audioStreamsAdapter;
     private StreamItemAdapter<VideoStream> videoStreamsAdapter;
+
+    private DownloadManager downloadManager;
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -127,6 +131,8 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
 
         this.videoStreamsAdapter = new StreamItemAdapter<>(getContext(), wrappedVideoStreams, true);
         this.audioStreamsAdapter = new StreamItemAdapter<>(getContext(), wrappedAudioStreams);
+
+        downloadManager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     @Override
@@ -334,6 +340,21 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
                 "fileName: " + fileName + ", " +
                 "isAudio: " + isAudio + ", " +
                 "threads: " + threads + ")");
+
+        Uri destinationUri = new Uri.Builder()
+                .scheme("file")
+                .appendEncodedPath(location)
+                .appendEncodedPath(fileName)
+                .build();
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setTitle(currentInfo.getName());
+        request.setDescription("Download with NewPipe");
+        request.setDestinationUri(destinationUri);
+        request.allowScanningByMediaScanner();
+        downloadManager.enqueue(request);
+
         //DownloadManagerService.startMission(getContext(), url, location, fileName, isAudio, threadsSeekBar.getProgress() + 1);
         getDialog().dismiss();
     }
