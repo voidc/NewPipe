@@ -1,14 +1,20 @@
 package org.schabi.newpipe.download;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import icepick.State;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -21,7 +27,11 @@ import org.schabi.newpipe.local.BaseLocalListFragment;
 import org.schabi.newpipe.report.UserAction;
 import org.schabi.newpipe.util.OnClickGesture;
 
+import java.io.File;
 import java.util.List;
+
+import static android.content.Intent.FLAG_GRANT_PREFIX_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 public class DownloadFragment
         extends BaseLocalListFragment<List<DownloadEntry>, Void> {
@@ -82,11 +92,16 @@ public class DownloadFragment
         itemListAdapter.setSelectedListener(new OnClickGesture<LocalItem>() {
             @Override
             public void selected(LocalItem selectedItem) {
-                final FragmentManager fragmentManager = getFM();
+                if(!(selectedItem instanceof DownloadEntry))
+                    return;
 
-                if(selectedItem instanceof DownloadEntry) {
-                    Log.d("DownloadFragment", "Selected download: " + ((DownloadEntry) selectedItem).title);
-                }
+                DownloadEntry entry = (DownloadEntry) selectedItem;
+                disposables.add(downloadManager.query(entry.downloadId)
+                        .onErrorComplete()
+                        .subscribe(
+                                DownloadFragment.this::handleDownloadInfo,
+                                error -> Log.e(TAG, "Retrieving download info failed: ", error)
+                        ));
             }
 
             @Override
@@ -207,4 +222,44 @@ public class DownloadFragment
         if (disposables != null) disposables.clear();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Utils
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void handleDownloadInfo(NewPipeDownloadManager.DownloadInfo info) {
+        Log.d(TAG, info.toString());
+        if(info.status == NewPipeDownloadManager.DownloadStatus.SUCCESSFUL) {
+            Context context = getContext();
+            if (context == null)
+                return;
+
+            String authority = context.getApplicationContext().getPackageName() + ".provider";
+            Uri contentUri = FileProvider.getUriForFile(context, authority , new File(info.localUri.getPath()));
+
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(contentUri, info.mediaType);
+            intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                intent.addFlags(FLAG_GRANT_PREFIX_URI_PERMISSION);
+            }
+
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent);
+            } else {
+                if(getView() != null) {
+                    Snackbar.make(getView(), R.string.toast_no_player, Snackbar.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, R.string.toast_no_player, Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
+            String progress = String.format("%.1f%%", 100.0 * info.downloadedBytes / info.totalBytes);
+            if(getView() != null) {
+                Snackbar.make(getView(), progress + "%", Snackbar.LENGTH_SHORT).show();
+            } else if(getContext() != null) {
+                Toast.makeText(getContext(), progress + "%", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
