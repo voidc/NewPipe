@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
+import org.schabi.newpipe.database.download.DownloadDAO;
 import org.schabi.newpipe.database.history.dao.SearchHistoryDAO;
 import org.schabi.newpipe.database.history.dao.StreamHistoryDAO;
 import org.schabi.newpipe.database.history.model.SearchHistoryEntry;
@@ -52,4 +53,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract PlaylistStreamDAO playlistStreamDAO();
 
     public abstract PlaylistRemoteDAO playlistRemoteDAO();
+
+    public abstract DownloadDAO downloadDAO();
 }

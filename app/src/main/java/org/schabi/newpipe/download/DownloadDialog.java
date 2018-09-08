@@ -23,7 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.schabi.newpipe.MainActivity;
+import org.schabi.newpipe.NewPipeDatabase;
 import org.schabi.newpipe.R;
+import org.schabi.newpipe.database.AppDatabase;
+import org.schabi.newpipe.database.download.DownloadEntity;
+import org.schabi.newpipe.database.stream.model.StreamEntity;
 import org.schabi.newpipe.extractor.stream.AudioStream;
 import org.schabi.newpipe.extractor.stream.Stream;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
@@ -57,7 +61,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
     private StreamItemAdapter<AudioStream> audioStreamsAdapter;
     private StreamItemAdapter<VideoStream> videoStreamsAdapter;
 
-    private DownloadManager downloadManager;
+    private NewPipeDownloadManager downloadManager;
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -132,7 +136,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
         this.videoStreamsAdapter = new StreamItemAdapter<>(getContext(), wrappedVideoStreams, true);
         this.audioStreamsAdapter = new StreamItemAdapter<>(getContext(), wrappedAudioStreams);
 
-        downloadManager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager = new NewPipeDownloadManager(requireContext());
     }
 
     @Override
@@ -347,14 +351,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
                 .appendEncodedPath(fileName)
                 .build();
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setTitle(currentInfo.getName());
-        request.setDescription("Download with NewPipe");
-        request.setDestinationUri(destinationUri);
-        request.allowScanningByMediaScanner();
-        downloadManager.enqueue(request);
-
+        downloadManager.startDownload(Uri.parse(url), destinationUri, currentInfo);
         //DownloadManagerService.startMission(getContext(), url, location, fileName, isAudio, threadsSeekBar.getProgress() + 1);
         getDialog().dismiss();
     }
