@@ -407,7 +407,7 @@ public class VideoDetailFragment
                 openPopupPlayer(true);
                 break;
             case R.id.detail_controls_download:
-                NavigationHelper.openDownloadsFragment(getFragmentManager());
+                NavigationHelper.openDownloadsFragment(getFM());
                 break;
         }
 
