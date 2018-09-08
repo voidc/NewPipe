@@ -5,6 +5,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
 import org.schabi.newpipe.database.download.DownloadDAO;
+import org.schabi.newpipe.database.download.DownloadEntity;
 import org.schabi.newpipe.database.history.dao.SearchHistoryDAO;
 import org.schabi.newpipe.database.history.dao.StreamHistoryDAO;
 import org.schabi.newpipe.database.history.model.SearchHistoryEntry;
@@ -22,16 +23,17 @@ import org.schabi.newpipe.database.stream.model.StreamStateEntity;
 import org.schabi.newpipe.database.subscription.SubscriptionDAO;
 import org.schabi.newpipe.database.subscription.SubscriptionEntity;
 
-import static org.schabi.newpipe.database.Migrations.DB_VER_12_0;
+import static org.schabi.newpipe.database.Migrations.DB_VER_13_0;
 
 @TypeConverters({Converters.class})
 @Database(
         entities = {
                 SubscriptionEntity.class, SearchHistoryEntry.class,
                 StreamEntity.class, StreamHistoryEntity.class, StreamStateEntity.class,
-                PlaylistEntity.class, PlaylistStreamEntity.class, PlaylistRemoteEntity.class
+                PlaylistEntity.class, PlaylistStreamEntity.class, PlaylistRemoteEntity.class,
+                DownloadEntity.class
         },
-        version = DB_VER_12_0,
+        version = DB_VER_13_0,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

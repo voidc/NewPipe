@@ -7,6 +7,7 @@ public interface LocalItem {
 
         PLAYLIST_STREAM_ITEM,
         STATISTIC_STREAM_ITEM,
+        DOWNLOAD_ITEM,
     }
 
     LocalItemType getLocalItemType();

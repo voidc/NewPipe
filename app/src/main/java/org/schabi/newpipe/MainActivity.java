@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 NavigationHelper.openBookmarksFragment(getSupportFragmentManager());
                 break;
             case ITEM_ID_DOWNLOADS:
-                NavigationHelper.openDownloads(this);
+                NavigationHelper.openDownloadsFragment(getSupportFragmentManager());
                 break;
             case ITEM_ID_HISTORY:
                 NavigationHelper.openStatisticFragment(getSupportFragmentManager());
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
         }
         switch (requestCode) {
             case PermissionHelper.DOWNLOADS_REQUEST_CODE:
-                NavigationHelper.openDownloads(this);
+                NavigationHelper.openDownloadsFragment(getSupportFragmentManager());
                 break;
             case PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE:
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_holder);
@@ -511,7 +511,8 @@ public class MainActivity extends AppCompatActivity {
                 onHomeButtonPressed();
                 return true;
             case R.id.action_show_downloads:
-                    return NavigationHelper.openDownloads(this);
+                    NavigationHelper.openDownloadsFragment(getSupportFragmentManager());
+                    return true;
             case R.id.action_history:
                     NavigationHelper.openStatisticFragment(getSupportFragmentManager());
                     return true;

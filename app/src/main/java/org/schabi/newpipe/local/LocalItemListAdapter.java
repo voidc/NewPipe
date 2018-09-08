@@ -7,13 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.schabi.newpipe.database.LocalItem;
-import org.schabi.newpipe.local.HeaderFooterHolder;
-import org.schabi.newpipe.local.LocalItemBuilder;
-import org.schabi.newpipe.local.holder.LocalItemHolder;
-import org.schabi.newpipe.local.holder.LocalPlaylistItemHolder;
-import org.schabi.newpipe.local.holder.LocalPlaylistStreamItemHolder;
-import org.schabi.newpipe.local.holder.LocalStatisticStreamItemHolder;
-import org.schabi.newpipe.local.holder.RemotePlaylistItemHolder;
+import org.schabi.newpipe.local.holder.*;
 import org.schabi.newpipe.util.FallbackViewHolder;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.OnClickGesture;
@@ -52,6 +46,7 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static final int STREAM_STATISTICS_HOLDER_TYPE = 0x1000;
     private static final int STREAM_PLAYLIST_HOLDER_TYPE = 0x1001;
+    private static final int DOWNLOAD_HOLDER_TYPE = 0x1002;
     private static final int LOCAL_PLAYLIST_HOLDER_TYPE = 0x2000;
     private static final int REMOTE_PLAYLIST_HOLDER_TYPE = 0x2001;
 
@@ -200,6 +195,7 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             case PLAYLIST_STREAM_ITEM: return STREAM_PLAYLIST_HOLDER_TYPE;
             case STATISTIC_STREAM_ITEM: return STREAM_STATISTICS_HOLDER_TYPE;
+            case DOWNLOAD_ITEM: return DOWNLOAD_HOLDER_TYPE;
             default:
                 Log.e(TAG, "No holder type has been considered for item: [" +
                         item.getLocalItemType() + "]");
@@ -224,6 +220,8 @@ public class LocalItemListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 return new LocalPlaylistStreamItemHolder(localItemBuilder, parent);
             case STREAM_STATISTICS_HOLDER_TYPE:
                 return new LocalStatisticStreamItemHolder(localItemBuilder, parent);
+            case DOWNLOAD_HOLDER_TYPE:
+                return new DownloadItemHolder(localItemBuilder, parent);
             default:
                 Log.e(TAG, "No view type has been considered for holder: [" + type + "]");
                 return new FallbackViewHolder(new View(parent.getContext()));

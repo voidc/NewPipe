@@ -347,11 +347,16 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
 
         Uri destinationUri = new Uri.Builder()
                 .scheme("file")
-                .appendEncodedPath(location)
+                .appendEncodedPath("/" + location)
                 .appendEncodedPath(fileName)
                 .build();
 
-        downloadManager.startDownload(Uri.parse(url), destinationUri, currentInfo);
+        disposables.add(downloadManager.startDownload(Uri.parse(url), destinationUri, currentInfo)
+                .onErrorComplete()
+                .subscribe(
+                        ignored -> {/* successful */},
+                        error -> Log.e(TAG, "startDownload() failure: ", error)
+                ));
         //DownloadManagerService.startMission(getContext(), url, location, fileName, isAudio, threadsSeekBar.getProgress() + 1);
         getDialog().dismiss();
     }

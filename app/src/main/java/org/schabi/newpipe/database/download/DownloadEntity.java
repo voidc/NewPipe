@@ -35,8 +35,8 @@ public class DownloadEntity {
     @ColumnInfo(name = DOWNLOAD_DATE)
     private Date downloadDate;
 
-    public DownloadEntity(long uid, long streamUid, Date downloadDate) {
-        this.downloadId = uid;
+    public DownloadEntity(long downloadId, long streamUid, @NonNull Date downloadDate) {
+        this.downloadId = downloadId;
         this.streamUid = streamUid;
         this.downloadDate = downloadDate;
     }

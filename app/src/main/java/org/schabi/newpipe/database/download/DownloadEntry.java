@@ -1,10 +1,13 @@
 package org.schabi.newpipe.database.download;
 
 import android.arch.persistence.room.ColumnInfo;
+import org.schabi.newpipe.database.LocalItem;
 import org.schabi.newpipe.database.stream.model.StreamEntity;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-public class DownloadEntry {
+import java.util.Date;
+
+public class DownloadEntry implements LocalItem {
     @ColumnInfo(name = StreamEntity.STREAM_ID)
     final public long uid;
     @ColumnInfo(name = StreamEntity.STREAM_SERVICE_ID)
@@ -25,8 +28,11 @@ public class DownloadEntry {
     final public long downloadId;
     @ColumnInfo(name = DownloadEntity.JOIN_STREAM_ID)
     final public long streamUid;
+    @ColumnInfo(name = DownloadEntity.DOWNLOAD_DATE)
+    final public Date downloadDate;
 
-    public DownloadEntry(long uid, int serviceId, String url, String title, StreamType streamType, long duration, String uploader, String thumbnailUrl, long downloadId, long streamUid) {
+    public DownloadEntry(long uid, int serviceId, String url, String title, StreamType streamType,long duration,
+                         String uploader, String thumbnailUrl, long downloadId, long streamUid, Date downloadDate) {
         this.uid = uid;
         this.serviceId = serviceId;
         this.url = url;
@@ -37,5 +43,11 @@ public class DownloadEntry {
         this.thumbnailUrl = thumbnailUrl;
         this.downloadId = downloadId;
         this.streamUid = streamUid;
+        this.downloadDate = downloadDate;
+    }
+
+    @Override
+    public LocalItemType getLocalItemType() {
+        return LocalItemType.DOWNLOAD_ITEM;
     }
 }

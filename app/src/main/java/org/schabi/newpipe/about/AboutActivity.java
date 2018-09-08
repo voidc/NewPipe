@@ -102,6 +102,7 @@ public class AboutActivity extends AppCompatActivity {
                 NavigationHelper.openSettings(this);
                 return true;
             case R.id.action_show_downloads:
+                //TODO: DownloadFragment
                 return NavigationHelper.openDownloads(this);
         }
 

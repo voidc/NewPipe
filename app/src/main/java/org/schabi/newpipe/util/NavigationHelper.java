@@ -23,6 +23,7 @@ import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.about.AboutActivity;
 import org.schabi.newpipe.download.DownloadActivity;
+import org.schabi.newpipe.download.DownloadFragment;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -388,6 +389,13 @@ public class NavigationHelper {
     public static void openSubscriptionsImportFragment(FragmentManager fragmentManager, int serviceId) {
         defaultTransaction(fragmentManager)
                 .replace(R.id.fragment_holder, SubscriptionsImportFragment.getInstance(serviceId))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public static void openDownloadsFragment(FragmentManager fragmentManager) {
+        defaultTransaction(fragmentManager)
+                .replace(R.id.fragment_holder, new DownloadFragment())
                 .addToBackStack(null)
                 .commit();
     }

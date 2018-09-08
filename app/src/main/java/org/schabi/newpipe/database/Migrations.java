@@ -8,6 +8,23 @@ public class Migrations {
 
     public static final int DB_VER_11_0 = 1;
     public static final int DB_VER_12_0 = 2;
+    public static final int DB_VER_13_0 = 3;
+
+    public static final Migration MIGRATION_12_13 = new Migration(DB_VER_12_0, DB_VER_13_0) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /*
+             * Unfortunately these queries must be hardcoded due to the possibility of
+             * schema and names changing at a later date, thus invalidating the older migration
+             * scripts if they are not hardcoded.
+             * */
+
+            // Not much we can do about this, since room doesn't create tables before migration.
+            // It's either this or blasting the entire database anew.
+            database.execSQL("CREATE TABLE IF NOT EXISTS `downloads` (`download_id` INTEGER PRIMARY KEY, `stream_id` INTEGER NOT NULL, `download_date` INTEGER NOT NULL, FOREIGN KEY(`stream_id`) REFERENCES `streams`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )");
+            database.execSQL("CREATE  INDEX `index_downloads_stream_id` ON `downloads` (`stream_id`)");
+        }
+    };
 
     public static final Migration MIGRATION_11_12 = new Migration(DB_VER_11_0, DB_VER_12_0) {
         @Override
