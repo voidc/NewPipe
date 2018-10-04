@@ -63,7 +63,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
 
     private NewPipeDownloadManager downloadManager;
 
-    private CompositeDisposable disposables = new CompositeDisposable();
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private EditText nameEditText;
     private Spinner streamsSpinner;
