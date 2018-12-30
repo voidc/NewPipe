@@ -1,6 +1,5 @@
 package org.schabi.newpipe.download;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.content.SharedPreferences;
@@ -27,11 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.schabi.newpipe.MainActivity;
-import org.schabi.newpipe.NewPipeDatabase;
 import org.schabi.newpipe.R;
-import org.schabi.newpipe.database.AppDatabase;
-import org.schabi.newpipe.database.download.DownloadEntity;
-import org.schabi.newpipe.database.stream.model.StreamEntity;
 import org.schabi.newpipe.extractor.MediaFormat;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -50,6 +45,7 @@ import org.schabi.newpipe.util.StreamItemAdapter.StreamSizeWrapper;
 import org.schabi.newpipe.util.ThemeHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -486,7 +482,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
 
         final String finalFileName = fileName;
 
-        DownloadManagerService.checkForRunningMission(context, location, fileName, (listed, finished) -> {
+        /*DownloadManagerService.checkForRunningMission(context, location, fileName, (listed, finished) -> {
             // should be safe run the following code without "getActivity().runOnUiThread()"
             if (listed) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -504,7 +500,9 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
             } else {
                 downloadSelected(context, stream, location, finalFileName, kind, threads);
             }
-        });
+        });*/
+        //TODO: implement checkForRunningMission
+        downloadSelected(context, stream, location, finalFileName, kind, threads);
     }
 
     private void downloadSelected(Context context, Stream selectedStream, String location, String fileName, char kind, int threads) {
@@ -545,11 +543,10 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
             urls = new String[]{selectedStream.getUrl(), secondaryStreamUrl};
         }
 
-        int threads = threadsSeekBar.getProgress() + 1;
-        Log.d("DownloadDialog", "Download " + url + " (" +
+        Log.d("DownloadDialog", "Download " + Arrays.toString(urls) + " (" +
                 "location: " + location + ", " +
                 "fileName: " + fileName + ", " +
-                "isAudio: " + isAudio + ", " +
+                "kind: " + kind + ", " +
                 "threads: " + threads + ")");
 
         Uri destinationUri = new Uri.Builder()
@@ -558,7 +555,7 @@ public class DownloadDialog extends DialogFragment implements RadioGroup.OnCheck
                 .appendEncodedPath(fileName)
                 .build();
 
-        disposables.add(downloadManager.startDownload(Uri.parse(url), destinationUri, currentInfo)
+        disposables.add(downloadManager.startDownload(Uri.parse(urls[0]), destinationUri, currentInfo)
                 .onErrorComplete()
                 .subscribe(
                         ignored -> {/* successful */},
